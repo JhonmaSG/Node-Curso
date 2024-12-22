@@ -7,6 +7,6 @@ fs.readdir('.', (error, files) =>{
     }
 
     files.forEach(file =>{
-        
+        console.log(file)
     })
 })
