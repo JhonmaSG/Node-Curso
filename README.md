@@ -9,9 +9,7 @@ Este repositorio contiene ejemplos y ejercicios para aprender y repasar Node.js.
 - Estructura del Proyectos
 - Temas
 - Recursos Adicionales
-- Contribuciones
-- Licencia
 
 ## Introducción
 
-Este proyecto está diseñado para ayudarte a comprender los conceptos básicos y avanzados de Node.js. A lo largo del curso, trabajarás en varios proyectos y ejercicios que te permitirán aplicar lo que has aprendido.
+Este proyecto está diseñado para ayudarte a comprender los conceptos básicos y avanzados de Node.js. A lo largo del curso, se trabajará en varios proyectos y ejercicios que permitirán aplicar lo aprendido.
