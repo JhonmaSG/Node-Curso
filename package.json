@@ -1,0 +1,26 @@
+{
+  "name": "node-curso",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JhonmaSG/Node-Curso.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JhonmaSG/Node-Curso/issues"
+  },
+  "homepage": "https://github.com/JhonmaSG/Node-Curso#readme",
+  "description": "",
+  "devDependencies": {
+    "standard": "^17.1.2"
+  },
+  "eslintConfig": {
+    "extends": "standard"
+  }
+}
