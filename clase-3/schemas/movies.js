@@ -21,10 +21,15 @@ const movieSchema = z.object({
   )
 })
 
-function validateMovie (object) {
-  return movieSchema.safeParse(object)
+function validateMovie (input) {
+  return movieSchema.safeParse(input)
+}
+// TypeScript in Partial: si no estan, ignora, de lo contario las valida
+function validatePartialMovie (input) {
+  return movieSchema.partial().safeParse(input)
 }
 
 module.exports = {
-  validateMovie
+  validateMovie,
+  validatePartialMovie
 }
