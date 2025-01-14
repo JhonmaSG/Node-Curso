@@ -2,7 +2,7 @@
 
 Este repositorio contiene ejemplos y ejercicios para aprender y repasar Node.js. El objetivo es proporcionar una base sólida en Node.js a través de proyectos prácticos y ejercicios.
 
-<image src="/APIREST_draw.PNG" alt="REST API">
+<image src="/clase-3/APIREST_draw.PNG" alt="REST API">
 
 ## Contenido
 
