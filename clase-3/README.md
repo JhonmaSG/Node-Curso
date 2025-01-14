@@ -8,5 +8,9 @@ En esta clase se tocan temas sobre las API REST (arquetectura de software), espe
 
 - Introducción API, REST y REST API
 - Estructura del Proyectos
+- Diseño de API de movies en JSON
+- Buenas prácticas
+- Diferencias entre POST, PUT y PATCH
+- Pequeña muestra de la API REST Básica
 - Recursos Adicionales
 
