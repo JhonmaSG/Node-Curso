@@ -31,7 +31,7 @@ Actualizar totallmente un elemento ya existente o crearlo si no existe.
 
 SI es idempotente, el resultado (En la gran mayoria de casos) siempre será el mismo
 
-## PATCH
+### PATCH
 Actualizar parcialmente un elemento/recurso.
 
 *Ruta: /movies/123-456-789*
