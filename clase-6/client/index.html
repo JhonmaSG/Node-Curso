@@ -9,23 +9,27 @@
   <script type="module">
     import { io } from 'https://cdn.socket.io/4.8.1/socket.io.esm.min.js'
 
-    const getUsername = async () => {
-      const username = localStorage.getItem('username')
-      if (username) {
-        console.log(`User existed ${username}`)
-        return username
+    const getUserData = async () => {
+      const storedUser = localStorage.getItem('userData')
+      if (storedUser) {
+        console.log(`User existed`, JSON.parse(storedUser))
+        return JSON.parse(storedUser)
       }
 
       const res = await fetch('https://random-data-api.com/api/users/random_user')
-      const { username: randomUsername } = await res.json()
+      const { username: randomUsername, avatar } = await res.json()
 
-      localStorage.setItem('username', randomUsername)
-      return randomUsername
+      const userData = { username: randomUsername, avatar }
+      localStorage.setItem('userData', JSON.stringify(userData))
+      return userData
     }
+
+    const userData = await getUserData()
 
     const socket = io({
       auth: {
-        username: await getUsername(),
+        username: userData.username,
+        avatar: userData.avatar,
         serverOffset: 0
       }
     })
@@ -33,16 +37,21 @@
     const form = document.getElementById('form')
     const input = document.getElementById('input')
     const messages = document.getElementById('messages')
+    const clearChat = document.getElementById('clearChat')
 
-    socket.on('chat message', (msg, serverOffset, username) => {
+    socket.on('chat message', (msg, serverOffset, username, avatar) => {
       const item = `<li>
-        <p>${msg}</p>
-        <small>${username}</small>
+        <img src="${avatar}" alt="${username}" width="40" height="40" style="border-radius: 50%;">
+        <small>${username} :</small> <p>${msg}</p>
       </li>`
       messages.insertAdjacentHTML('beforeend', item)
       socket.auth.serverOffset = serverOffset
       // scroll to bottom of messages
       messages.scrollTop = messages.scrollHeight
+    })
+
+    socket.on('chatCleared', () => {
+      document.getElementById('chat').innerHTML = '';
     })
 
     form.addEventListener('submit', (e) => {
@@ -51,6 +60,15 @@
       if (input.value) {
         socket.emit('chat message', input.value)
         input.value = ''
+      }
+    })
+
+    clearChat.addEventListener('click', () => {
+      const confirmDelete = confirm("¿Estas seguro de que quieres borrar el chat? Esta acción no se puede deshacer.")
+
+      if (confirmDelete) {
+        document.getElementById('chat').innerHTML = ""
+        socket.emit('clearChat')
       }
     })
   </script>
@@ -68,41 +86,69 @@
 
     body {
       margin: 0;
+      background: linear-gradient(0deg, #000000, #0e1c35);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      display: grid;
-      place-content: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
-      padding: 36px 36px 100px 36px;
-      grid-template-rows: 1fr;
+      text-align: center;
+      padding: 20px;
     }
 
+    /* style to tittle and content top */
+    #content {
+      margin-bottom: 5px;
+    }
+
+    #content p {
+      max-width: 600px;
+      word-wrap: break-word;
+      text-align: center;
+    }
+
+    /* Style to chat and messages */
     #messages {
+      text-align: left;
       list-style-type: none;
       margin: 0;
       padding: 0;
       overflow-y: scroll;
-      height: 100%;
+      height: 94%;
       scroll-behavior: smooth;
       padding-bottom: 48px;
     }
 
     #messages>li {
-      padding: .5rem 1rem;
+      background: #222;
+      display: flex;
+      padding: .1rem .5rem;
+      margin: 0;
+    }
+
+    #messages>li small {
+      padding: 1.1rem .5rem;
+      min-width: 140px;
+      font-weight: bold;
     }
 
     #messages>li:nth-child(odd) {
-      background: #000;
+      background: #000 !important;
+      color: #fff;
     }
 
     #chat {
       border: 1px solid #ccc;
       border-radius: 4px;
       overflow: hidden;
-      width: 400px;
-      height: 100%;
+      width: 600px;
+      height: 80%;
       position: relative;
+      margin-top: 10px;
     }
 
+    /* Style Form */
     #form {
       bottom: 0;
       display: flex;
@@ -136,10 +182,56 @@
     #form>button:hover {
       background: #0cf;
     }
+
+    /* Animation to Description */
+    details {
+      padding-top: 10px;
+      overflow: hidden;
+      transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    }
+
+    details[open] {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    summary {
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #clearChat {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #clearChat:hover {
+      background-color: #cc0000;
+    }
   </style>
 </head>
 
 <body>
+  <div id="content">
+    <h1>JhonmaSG_Chat</h1>
+    <p>Este proyecto esta basado en el curso de <b>Node.js</b> de midudev pero con mas trabajo de por medio.
+  </div>
+
   <section id="chat">
     <ul id="messages"></ul>
     <form id="form">
@@ -147,6 +239,19 @@
       <button type="submit">Enviar</button>
     </form>
   </section>
+
+  <div id="content">
+    <details>
+      <summary>Descripción</summary>
+      <p>Se pone en practica <b>Node.js</b> con
+        <b>Express</b>, <b>Turso.tech</b> para la Base de datos y
+        <b>Socket.io</b> para la comunicación bidireccional entre los diferentes chats, junto con una <b>API</b>
+        (random-data-api) para los nombres de users y avatares.
+      </p>
+      <button id="clearChat">Borrar Chat</button>
+
+    </details>
+  </div>
 
 </body>
 
