@@ -6,6 +6,9 @@ import { createClient } from '@libsql/client'
 import { Server } from 'socket.io'
 import { createServer } from 'node:http'
 
+import path from 'path'
+import { fileURLToPath } from 'node:url'
+
 dotenv.config()
 
 const port = process.env.PORT ?? 3000
@@ -16,6 +19,13 @@ const io = new Server(server, {
   connectionStateRecovery: {}
 })
 
+// dirname en módule ES
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+app.use(express.static(path.join(__dirname, '../client')))
+app.use('/favicon.ico', express.static(path.join(__dirname, '../client/img/favicon.ico')))
+
 // Conexión a la base de datos
 const db = createClient({
   url: 'libsql://busy-vixen-jhonmasg.turso.io',
@@ -23,14 +33,18 @@ const db = createClient({
 })
 
 // CREACION DE LA BD
-await db.execute(`
-  CREATE TABLE IF NOT EXISTS messages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    content TEXT,
-    user TEXT,
-    avatar TEXT
-  )
-`)
+async function setupDatabase () {
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      content TEXT,
+      user TEXT,
+      avatar TEXT
+    )
+  `)
+}
+// Init db
+await setupDatabase()
 
 io.on('connection', async (socket) => {
   console.log('a user has connected!')
